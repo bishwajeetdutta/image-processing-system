@@ -1,20 +1,20 @@
 import boto3
 import os
 import urllib.parse
-from PIL import image
+from PIL import Image
 import io
 
 s3 = boto3.client('s3')
 
 #bucket where the resized image will be saved
-dest_bucket - os.environ['DESTINATION_BUCKET']
+dest_bucket = os.environ['DESTINATION_BUCKET']
 
 def lambda_handler(event, context):
 	#get bucket name and file name from the event that triggered this
 	bucket_name = event['Records'][0]['s3']['bucket']['name']
 
 	#get file name
-	raw_file_name - event['Records'][0]['s3']['object']['key']
+	raw_file_name = event['Records'][0]['s3']['object']['key']
 	#fix space prob
 	file_name = urllib.parse.unquote_plus(raw_file_name)
 
@@ -22,7 +22,7 @@ def lambda_handler(event, context):
 
 	try:
 		#download the image from s3
-		file_obj= s3.get_object(Bucket=bucket_name. Key=file_name)
+		file_obj= s3.get_object(Bucket=bucket_name, Key=file_name)
 		img_data = file_obj['Body'].read()
 
 		#open image
