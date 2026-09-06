@@ -9,6 +9,9 @@ s3 = boto3.client('s3')
 #bucket where the resized image will be saved
 dest_bucket = os.environ['DESTINATION_BUCKET']
 
+#only process files with these extensions
+allowed_extension = ['.jpg', '.jpeg', '.png']
+
 def lambda_handler(event, context):
 	#get bucket name and file name from the event that triggered this
 	bucket_name = event['Records'][0]['s3']['bucket']['name']
@@ -19,6 +22,12 @@ def lambda_handler(event, context):
 	file_name = urllib.parse.unquote_plus(raw_file_name)
 
 	print("New File Uploaded: ", file_name)
+
+	#check file extension before doing anything
+	ext = os.path.splitext(file_name)[1].lower()
+	if ext not in allowed_extension:
+		print("Skipping non-image file: ", file_name)
+		return
 
 	try:
 		#download the image from s3
