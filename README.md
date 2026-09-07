@@ -4,9 +4,14 @@ An event-driven, serverless image processing system where S3 object creation eve
 
 ## Architecture
 
-User (Uploads the image) → S3 (Source Bucket) → S3 Event Notification → Lambda (resize/compress) → S3 (Destination Bucket)
-                                                              ↓
-                                                     CloudWatch (Logs & Monitoring)
+```mermaid
+graph LR
+    User((User)) -- "Uploads Image" --> S3Source[("S3<br>(Source Bucket)")]
+    S3Source --> Lambda(["Lambda<br>(Image Processor)"])
+    Lambda --> S3Dest[("S3<br>(Destination Bucket)")]
+    Lambda --> CloudWatch(["CloudWatch<br>(Logs & Monitoring)"])
+
+```
 
 ## AWS Services Used
 - S3 - to store the raw and processed images
@@ -31,7 +36,8 @@ User (Uploads the image) → S3 (Source Bucket) → S3 Event Notification → La
 7. Upload a test image to confirm it works
 
 ### Packaging the Pillow Layer
-\`\`\`
+
+```bash
 pip install pillow -t pillow_layer/python --platform manylinux2014_x86_64 --only-binary=:all:
 cd pillow_layer && zip -r pillow_layer.zip python
-\`\`\`
+```
